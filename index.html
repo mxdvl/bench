@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark</title>
+
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form>
+        <label>
+            Case 1
+            <textarea id="one" cols="30" rows="10">new DOMParser().parseFromString(html, 'text/html');
+                console.log(1)
+            </textarea>
+        </label>
+
+        <label>
+            Case 2
+            <textarea id="two" cols="30" rows="10">new DOMParser().parseFromString(html, 'text/html');
+                console.log(2);</textarea>
+        </label>
+    </form>
+
+    <script type="module">
+
+        const html = '<h1>Heading</h1><p>And this is a paragraph.</p>'
+
+        window.html = html;
+
+        const test_cases = [...document.querySelectorAll("textarea")];
+
+        for (const { innerText, innerHTML, id } of test_cases) {
+            const test_case = new Function([], innerHTML);
+            const start = performance.mark(id)
+            let count = 0;
+            while (performance.now() < start.startTime + 600) {
+                test_case()
+                count++;
+            }
+            const end = performance.measure(id + '-end', start.name)
+            console.log(id, count, end)
+        }
+    </script>
+
+</body>
+
+</html>
